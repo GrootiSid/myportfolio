@@ -55,6 +55,15 @@
 
             </div>
             <div class="hero-social" role="list" aria-label="Social links">
+              <a class="social" href="#" aria-label="Email">
+                
+              </a>
+              <a class="social" href="https://github.com/GrootiSid" target="_blank" rel="noopener" aria-label="GitHub">
+               
+              </a>
+              <a class="social" href="https://www.linkedin.com/in/grootisid" target="_blank" rel="noopener" aria-label="LinkedIn">
+               
+              </a>
             </div>
           </div>
           <div class="hero-visual" data-aos="zoom-in" aria-hidden>
@@ -265,7 +274,40 @@
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
+    
+    // Clear previous errors
+    document.getElementById("err-name").textContent = "";
+    document.getElementById("err-email").textContent = "";
+    document.getElementById("err-message").textContent = "";
+    
+    // Client-side validation
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
+    
+    let isValid = true;
+    
+    if (!name) {
+      document.getElementById("err-name").textContent = "Please enter your name";
+      isValid = false;
+    }
+    
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      document.getElementById("err-email").textContent = "Please enter a valid email";
+      isValid = false;
+    }
+    
+    if (message.length < 10) {
+      document.getElementById("err-message").textContent = "Message must be at least 10 characters";
+      isValid = false;
+    }
+    
+    if (!isValid) {
+      return;
+    }
+    
     responseMsg.innerText = "Sending...";
+    responseMsg.style.color = "";
 
     const formData = new FormData(form);
 

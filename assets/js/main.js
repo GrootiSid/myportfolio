@@ -95,28 +95,7 @@ if(window.AOS){ AOS.init({ once:true, duration:700, easing:'ease-out' }); }
 
 // Removed GitHub calendar; replaced with tech marquee
 
-// Contact form validation (client‑side)
-(()=>{
-  const form = $('#contactForm');
-  if(!form) return;
-  form.addEventListener('submit', (e)=>{
-    e.preventDefault();
-    let ok = true;
-    const name = $('#name');
-    const email = $('#email');
-    const message = $('#message');
-    const setErr=(id,msg)=>{$('#'+id).textContent=msg};
-    setErr('err-name',''); setErr('err-email',''); setErr('err-message','');
-    if(!name.value.trim()){ setErr('err-name','Please enter your name'); ok=false; }
-    if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)){ setErr('err-email','Enter a valid email'); ok=false; }
-    if(message.value.trim().length<10){ setErr('err-message','Message must be at least 10 characters'); ok=false; }
-    if(ok){
-      const mailto = `mailto:siddhantgrooti@gmail.com?subject=${encodeURIComponent('Portfolio Contact from '+name.value)}&body=${encodeURIComponent(message.value+"\n\nFrom: "+email.value)}`;
-      window.location.href = mailto;
-      form.reset();
-    }
-  });
-})();
+// Contact form validation (client‑side) - removed mailto handler to use Web3Forms API
 
 // Copy email to clipboard
 (()=>{
