@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes">
     <title>Siddhant Kumar • AI Developer & Full‑Stack Engineer</title>
     <meta name="description" content="Next‑gen AI developer and full‑stack engineer portfolio – projects, skills, services, and contact.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -233,7 +233,7 @@
     <h2 id="contact-title" class="section-title" data-aos="fade-up">Contact</h2>
 
     <!-- Contact Form -->
-    <form id="contactForm" class="form fancy" novalidate data-aos="zoom-in" data-aos-delay="100">
+    <form id="contactForm" class="form fancy" novalidate data-aos="zoom-in" data-aos-delay="100" action="javascript:void(0);">
       <!-- Hidden Access Key (from Web3Forms dashboard) -->
       <input type="hidden" name="access_key" value="4bf4395d-4b2b-47e2-b420-d521039ce52c">
 
@@ -256,7 +256,7 @@
       </div>
 
       <div class="cta-row">
-        <button class="btn btn-primary" type="submit">Send</button>
+        <button class="btn btn-primary" type="submit">Send Message</button>
         <button class="btn btn-glass" type="button" id="copyEmail" data-email="siddhantgrooti@gmail.com">Copy Email</button>
       </div>
     </form>
@@ -269,76 +269,103 @@
 </section>
 
 <script>
-  const form = document.getElementById("contactForm");
-  const responseMsg = document.getElementById("formResponse");
+  // Contact Form Handler - Prevents any mailto behavior
+  document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById("contactForm");
+    const responseMsg = document.getElementById("formResponse");
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    
-    // Clear previous errors
-    document.getElementById("err-name").textContent = "";
-    document.getElementById("err-email").textContent = "";
-    document.getElementById("err-message").textContent = "";
-    
-    // Client-side validation
-    const name = document.getElementById("name").value.trim();
-    const email = document.getElementById("email").value.trim();
-    const message = document.getElementById("message").value.trim();
-    
-    let isValid = true;
-    
-    if (!name) {
-      document.getElementById("err-name").textContent = "Please enter your name";
-      isValid = false;
-    }
-    
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      document.getElementById("err-email").textContent = "Please enter a valid email";
-      isValid = false;
-    }
-    
-    if (message.length < 10) {
-      document.getElementById("err-message").textContent = "Message must be at least 10 characters";
-      isValid = false;
-    }
-    
-    if (!isValid) {
-      return;
-    }
-    
-    responseMsg.innerText = "Sending...";
-    responseMsg.style.color = "";
+    if (form) {
+      // Remove any existing event listeners
+      form.removeEventListener("submit", form.submitHandler);
+      
+      // Add new submit handler
+      form.submitHandler = async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
+        
+        // Clear previous errors
+        document.getElementById("err-name").textContent = "";
+        document.getElementById("err-email").textContent = "";
+        document.getElementById("err-message").textContent = "";
+        
+        // Client-side validation
+        const name = document.getElementById("name").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const message = document.getElementById("message").value.trim();
+        
+        let isValid = true;
+        
+        if (!name) {
+          document.getElementById("err-name").textContent = "Please enter your name";
+          isValid = false;
+        }
+        
+        if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          document.getElementById("err-email").textContent = "Please enter a valid email";
+          isValid = false;
+        }
+        
+        if (message.length < 10) {
+          document.getElementById("err-message").textContent = "Message must be at least 10 characters";
+          isValid = false;
+        }
+        
+        if (!isValid) {
+          return false;
+        }
+        
+        responseMsg.innerText = "Sending...";
+        responseMsg.style.color = "";
 
-    const formData = new FormData(form);
+        const formData = new FormData(form);
 
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: formData
+        try {
+          const response = await fetch("https://api.web3forms.com/submit", {
+            method: "POST",
+            body: formData
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            responseMsg.style.color = "green";
+            responseMsg.innerText = "Thank you! Your message has been sent.";
+            form.reset();
+          } else {
+            responseMsg.style.color = "red";
+            responseMsg.innerText = "Oops! Something went wrong. Try again.";
+          }
+        } catch (error) {
+          responseMsg.style.color = "red";
+          responseMsg.innerText = "Error: Unable to send message.";
+        }
+        
+        return false;
+      };
+      
+      // Add event listener
+      form.addEventListener("submit", form.submitHandler, { passive: false });
+    }
+
+    // Copy email button
+    const copyEmailBtn = document.getElementById("copyEmail");
+    if (copyEmailBtn) {
+      copyEmailBtn.addEventListener("click", function(e) {
+        e.preventDefault();
+        const email = this.dataset.email;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(email).then(() => {
+            this.textContent = "Copied!";
+            setTimeout(() => this.textContent = "Copy Email", 2000);
+          }).catch(() => {
+            alert("Email copied: " + email);
+          });
+        } else {
+          alert("Email: " + email);
+        }
       });
-
-      const result = await response.json();
-
-      if (result.success) {
-        responseMsg.style.color = "green";
-        responseMsg.innerText = "Thank you! Your message has been sent.";
-        form.reset();
-      } else {
-        responseMsg.style.color = "red";
-        responseMsg.innerText = "Oops! Something went wrong. Try again.";
-      }
-    } catch (error) {
-      responseMsg.style.color = "red";
-      responseMsg.innerText = "Error: Unable to send message.";
     }
-  });
-
-  // Copy email button
-  document.getElementById("copyEmail").addEventListener("click", () => {
-    const email = document.getElementById("copyEmail").dataset.email;
-    navigator.clipboard.writeText(email).then(() => {
-      alert("Email copied: " + email);
-    });
   });
 </script>
 
