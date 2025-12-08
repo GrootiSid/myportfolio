@@ -55,8 +55,12 @@ if(window.AOS){ AOS.init({ once:true, duration:700, easing:'ease-out' }); }
     particles.push({theta,phi});
   }
   let t=0;
+  // rotation speed multiplier controlled by UI
+  let speed = 1.0;
+  const minSpeed = 0.05, maxSpeed = 4.0;
+
   function render(){
-    t += 0.003;
+    t += 0.003 * speed;
     ctx.clearRect(0,0,canvas.width,canvas.height);
     const R = Math.min(canvas.width, canvas.height)/2.6;
     const cx = canvas.width/2, cy = canvas.height/2;
@@ -78,6 +82,48 @@ if(window.AOS){ AOS.init({ once:true, duration:700, easing:'ease-out' }); }
     requestAnimationFrame(render);
   }
   render();
+
+  // Globe speed control UI (knob + badge)
+  const control = document.getElementById('globeSpeedControl');
+  const dial = control ? control.querySelector('.dial') : null;
+
+   const updateUI = ()=>{
+     if(dial) dial.style.transform = `rotate(${(speed-1)*90}deg)`; // visual rotation only
+   };
+   updateUI();
+
+  if(control && dial){
+    // Wheel to adjust speed (over badge or knob)
+    const wheelHandler = (ev)=>{
+      ev.preventDefault();
+      const delta = ev.deltaY > 0 ? -0.05 : 0.05;
+      speed = Math.min(maxSpeed, Math.max(minSpeed, +(speed+delta).toFixed(2)));
+      updateUI();
+    };
+    control.addEventListener('wheel', wheelHandler, { passive:false });
+
+    // Drag horizontally to adjust speed
+    let dragging=false, lastX=0;
+    control.addEventListener('pointerdown',(e)=>{ dragging=true; lastX=e.clientX; control.setPointerCapture && control.setPointerCapture(e.pointerId); control.classList.add('dragging'); });
+    control.addEventListener('pointermove',(e)=>{
+      if(!dragging) return; 
+      const dx = e.clientX - lastX; lastX = e.clientX;
+      const delta = dx * 0.006; // sensitivity
+      speed = Math.min(maxSpeed, Math.max(minSpeed, +(speed + delta).toFixed(2)));
+      updateUI();
+    });
+    control.addEventListener('pointerup',(e)=>{ dragging=false; control.releasePointerCapture && control.releasePointerCapture(e.pointerId); control.classList.remove('dragging'); });
+
+    // Keyboard accessibility on control
+    control.addEventListener('keydown',(e)=>{
+      if(e.key === 'ArrowRight' || e.key === 'ArrowUp'){ speed = Math.min(maxSpeed, +(speed + 0.1).toFixed(2)); }
+      if(e.key === 'ArrowLeft' || e.key === 'ArrowDown'){ speed = Math.max(minSpeed, +(speed - 0.1).toFixed(2)); }
+      updateUI();
+      if(['ArrowUp','ArrowRight','ArrowDown','ArrowLeft'].includes(e.key)) e.preventDefault();
+    });
+  }
+
+  // No reset button: user controls speed via knob/wheel/keyboard
 })();
 
 // Mission typewriter (no external dep)

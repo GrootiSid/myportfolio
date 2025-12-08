@@ -1,18 +1,32 @@
 :root{
-  --bg-900:#0B1426; /* deep space blue */
-  --bg-800:#0F172A;
-  --bg-700:#1e3947; /* background gradient end  #10B981*/
-  --cyan:#00D4FF;
-  --purple-1:#6B46C1;
-  --purple-2:#147086;
-  --neon:#115dc0;
-  --silver:#25bbf6;
-  --orange:#F59E0B;
-  --text-100:#E6F6FF;
-  --glass:rgba(255,255,255,.06);
-  --glass-border:rgba(255,255,255,.18);
-  --radius:18px;
-  --shadow:0 10px 30px rgba(0,0,0,.35), 0 0 40px rgba(0,212,255,.12);
+  /* Primary palette (user) */
+  --primary-dark-indigo: #0B1221; /* Dark Indigo */
+  --primary-deep-sapphire: #09182F; /* Deep Sapphire */
+
+  /* Accents */
+  --accent-soft-blue: #3B82F6; /* Soft Blue */
+  --accent-cyan-glow: #22D3EE; /* Cyan Glow */
+  --accent-mint-green: #7CF9C2; /* Mint Green */
+
+  /* Text */
+  --text-white: #FFFFFF;
+  --text-cool-gray: #94A3B8;
+
+  /* Legacy and component mappings (keep existing rules working) */
+  --bg-900: var(--primary-dark-indigo);
+  --bg-800: var(--primary-deep-sapphire);
+  --bg-700: #0E2A44; /* slightly lighter/blended tone */
+  --cyan: var(--accent-cyan-glow);
+  --purple-1: var(--accent-soft-blue);
+  --purple-2: var(--accent-cyan-glow);
+  --neon: var(--accent-cyan-glow);
+  --silver: var(--text-cool-gray);
+  --orange: #F59E0B;
+  --text-100: var(--text-white);
+  --glass: rgba(255,255,255,.04);
+  --glass-border: rgba(255,255,255,.12);
+  --radius: 18px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35), 0 0 40px rgba(34,211,238,.08);
 }
 
 *{box-sizing:border-box}
@@ -34,7 +48,7 @@ body{
 .muted{color:#b2c2d0}
 .center{text-align:center}
 
-.site-header{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,rgba(11,20,38,.85),rgba(11,20,38,.4));backdrop-filter:blur(10px);border-bottom:1px solid var(--glass-border)}
+.site-header{position:sticky;top:0;z-index:50;background:var(--bg-900);backdrop-filter:blur(8px);border-bottom:1px solid var(--glass-border)}
 .nav{display:flex;align-items:center;justify-content:space-between;padding:14px 0}
 .brand{display:flex;align-items:center;gap:12px}
 .brand-text{font-family:Michroma,Inter,sans-serif;font-weight:800}
@@ -64,6 +78,16 @@ body{
 .avatar-holo{position:absolute;bottom:-18px;right:10px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 50% 40%,rgba(255,255,255,.15),transparent 60%);border:1px solid var(--glass-border);backdrop-filter:blur(8px);display:grid;place-items:center}
 .avatar-circle{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--purple-1),var(--cyan))}
 
+/* Globe control (badge + knob) */
+
+/* decorative background knob is created by the control's ::before pseudo-element */
+
+.globe-control{position:absolute;right:20px;bottom:20px;width:96px;height:96px;border-radius:50%;display:grid;place-items:center;background:transparent;border:none;z-index:6;cursor:grab;transform:translateY(25px)}
+.globe-control::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 35% 35%, rgba(147,51,234,0.06), rgba(0,212,255,0.04)), linear-gradient(135deg, rgba(147,51,234,0.06), rgba(0,212,255,0.04));border-radius:50%;border:1px solid var(--glass-border);box-shadow:0 10px 30px rgba(0,0,0,0.35);transform:scale(1);}
+.globe-control .dial{position:relative;z-index:2;width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--purple-1),var(--cyan));box-shadow:inset 0 -6px 18px rgba(0,0,0,0.25);transition:transform .12s linear;border:2px solid rgba(255,255,255,0.06)}
+.globe-control.dragging{cursor:grabbing}
+
+
 /* Orbiting language icons */
 .orbit-layer{position:absolute;inset:0;display:grid;place-items:center;z-index:2;pointer-events:none}
 .orbit-item{position:absolute;font-size:28px;text-shadow:0 0 10px rgba(0,212,255,.6)}
@@ -89,7 +113,20 @@ body{
 .traits{display:flex;gap:10px;list-style:none;margin:16px 0 0;padding:0;flex-wrap:wrap}
 .badge{padding:6px 10px;border-radius:999px;background:linear-gradient(90deg,var(--cyan),var(--purple-2));color:#011015;font-weight:700}
 
-.timeline{margin-top:18px;border-left:2px solid rgba(255,255,255,.1);padding-left:16px}
+.timeline{position:relative;margin-top:18px;padding:8px 0 24px;list-style:none}
+.timeline::before{content:"";position:absolute;left:28px;top:0;bottom:0;width:2px;background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));border-radius:2px}
+.timeline-item{position:relative;margin:18px 0;padding:12px 16px 12px 72px}
+.timeline-marker{position:absolute;left:12px;top:12px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(90deg,var(--purple-1),var(--purple-2));box-shadow:0 8px 30px rgba(17,93,192,.18);border:2px solid rgba(255,255,255,.06);color:#fff}
+.timeline-marker svg{width:20px;height:20px}
+.timeline-content{background:rgba(255,255,255,.02);border:1px solid var(--glass-border);padding:12px 14px;border-radius:12px}
+.timeline-head h3{margin:0 0 6px}
+.timeline-head time{display:block;color:#9fb6c8;font-size:0.9rem;margin-bottom:8px}
+.timeline-item.alt{padding-left:16px;padding-right:72px;text-align:right}
+.timeline-item.alt .timeline-marker{left:auto;right:12px}
+.timeline-item.alt .timeline-content{display:inline-block;text-align:left}
+.timeline .bullets{margin:8px 0 0 0;padding-left:18px}
+.timeline .bullets li{margin:6px 0;color:#cfe7ff}
+.timeline-item .muted.small{color:#9fb6c8;margin:6px 0 0}
 .tl-item{position:relative;margin-bottom:14px}
 .tl-dot{position:absolute;left:-11px;top:6px;width:10px;height:10px;border-radius:50%;background:var(--cyan);box-shadow:0 0 12px var(--cyan)}
 .tl-content h3{margin:0 0 4px}
@@ -106,7 +143,23 @@ body{
 
 .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
 .project-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
-.project .thumb{height:140px;border-radius:12px;margin-bottom:10px}
+.project .thumb{
+  /* Use a stable aspect ratio so screenshots don't stretch */
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  max-height: 200px;
+  border-radius: 12px;
+  margin-bottom: 10px;
+  overflow: hidden;
+  display: block;
+}
+.project .thumb img, .thumb-img{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  display: block;
+}
 .holo{background:linear-gradient(135deg,rgba(0,212,255,.18),rgba(147,51,234,.18));border:1px solid var(--glass-border)}
 .tech-marquee{overflow:hidden;border:1px solid var(--glass-border);border-radius:12px;margin-top:16px;background:rgba(255,255,255,.04)}
 .tech-marquee .track{display:flex;gap:26px;padding:10px;animation:marquee 16s linear infinite;white-space:nowrap}
@@ -177,12 +230,18 @@ body{
   .title { font-size: clamp(28px, 5vw, 48px); }
   .hero-visual { min-height: 300px; }
   .globe { height: 300px; }
+  /* decorative badge removed; keep space free for layout */
+  .globe-control{right:10px;bottom:10px;width:64px;height:64px}
+  /* decorative badge removed; keep space free for layout */
+  .globe-control{right:12px;bottom:12px;width:72px;height:72px}
   .orbit-item { font-size: 24px; }
   @keyframes orbit { from { transform: rotate(0deg) translateX(140px) rotate(0deg); } to { transform: rotate(360deg) translateX(140px) rotate(-360deg); } }
   .about-panels { grid-template-columns: 1fr; gap: 12px; }
   .skills-cards { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); }
   .skill { height: 140px; }
   .project-grid { grid-template-columns: 1fr; }
+  /* make thumbnails a bit shorter on smaller screens */
+  .project .thumb{ max-height: 140px; aspect-ratio: 4 / 3; }
   .form.fancy { grid-template-columns: 1fr; }
   .achv-grid { grid-template-columns: 1fr; }
   .cta-row { justify-content: center; }
@@ -206,7 +265,7 @@ body{
   .btn { padding: 8px 14px; font-size: 0.9rem; }
   .cta-row { gap: 8px; }
   .field input, .field textarea { padding: 8px; font-size: 0.9rem; }
-  .field textarea { rows: 4; }
+  /* textarea rows are set via HTML attribute; no CSS rows property */
   .map { height: 250px; }
   .site-footer { padding: 20px 0; font-size: 0.9rem; }
 }
@@ -230,7 +289,7 @@ body{
   .btn { padding: 6px 12px; font-size: 0.85rem; }
   .cta-row { flex-direction: column; align-items: center; gap: 6px; }
   .field input, .field textarea { padding: 6px; font-size: 0.85rem; }
-  .field textarea { rows: 3; }
+  /* textarea rows are set via HTML attribute; no CSS rows property */
   .form { gap: 8px; }
   .map { height: 200px; }
   .site-footer { padding: 16px 0; font-size: 0.85rem; }
