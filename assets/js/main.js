@@ -160,13 +160,18 @@ if(window.AOS){ AOS.init({ once:true, duration:700, easing:'ease-out' }); }
 (()=>{
   const btn = $('#downloadResume');
   if(!btn) return;
-  btn.addEventListener('click', ()=>{
+  btn.addEventListener('click', (e)=>{
+    // show burst effect
     burst(btn);
-    // Placeholder: replace with actual PDF path when available
-    const link = document.createElement('a');
-    link.href = 'assets/resume/Siddhant_Kumar_Resume.pdf';
-    link.download = 'Siddhant_Kumar_Resume.pdf';
-    document.body.appendChild(link); link.click(); link.remove();
+    // Prefer an explicit Google Drive link if provided (data-gdrive). Fall back to href or local PDF.
+    const gdrive = btn.dataset.gdrive;
+    const pdfPath = gdrive || btn.getAttribute('href') || 'assets/resume/Siddhant_Kumar_Resume.pdf';
+    try{
+      window.open(pdfPath, '_blank', 'noopener');
+    }catch(err){
+      // fallback: navigate in same tab
+      window.location.href = pdfPath;
+    }
   });
 
   function burst(origin){
